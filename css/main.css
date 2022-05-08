@@ -2942,7 +2942,7 @@ mjx-container[display='true'] + br {
   }
 }
 body {
-  background: url("images/avatar.jpg");
+  background: url("images/background.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
