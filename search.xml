@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>test</title>
-    <url>/2022/05/07/test/</url>
+    <title></title>
+    <url>/2022/05/07/Room%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<p>Room-数据库持久化存储</p>
 <p>简介： Room提供了一个访问SQLite的抽象层，以便在利用SQLite的全部功能的同时进行流畅的数据库访问。 </p>
 <p>处理大量结构化数据的应用, 能从在本地持久化数据中极大受益. 最常见的用例是缓存有关联的数据碎片. 以这种方式, 在设备不能访问网络的时候, 用户依然能够浏览离线内容. 任何用户发起的改变, 都应该在设备重新在线之后同步到服务器.</p>
@@ -64,8 +64,8 @@
 ]]></content>
   </entry>
   <entry>
-    <title></title>
-    <url>/2022/05/07/Room%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</url>
+    <title>test</title>
+    <url>/2022/05/07/test/</url>
     <content><![CDATA[<p>Room-数据库持久化存储</p>
 <p>简介： Room提供了一个访问SQLite的抽象层，以便在利用SQLite的全部功能的同时进行流畅的数据库访问。 </p>
 <p>处理大量结构化数据的应用, 能从在本地持久化数据中极大受益. 最常见的用例是缓存有关联的数据碎片. 以这种方式, 在设备不能访问网络的时候, 用户依然能够浏览离线内容. 任何用户发起的改变, 都应该在设备重新在线之后同步到服务器.</p>
