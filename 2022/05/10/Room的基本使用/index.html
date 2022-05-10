@@ -23,27 +23,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slindeLeftIn","sidebar":"slideDownBigOut"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Room-数据库持久化存储 简介： Room提供了一个访问SQLite的抽象层，以便在利用SQLite的全部功能的同时进行流畅的数据库访问。  处理大量结构化数据的应用, 能从在本地持久化数据中极大受益. 最常见的用例是缓存有关联的数据碎片. 以这种方式, 在设备不能访问网络的时候, 用户依然能够浏览离线内容. 任何用户发起的改变, 都应该在设备重新在线之后同步到服务器. 因为Room为你充分消除">
+    <meta name="description" content="Room-数据库持久化存储 简介： Room提供了一个访问SQLite的抽象层，以便在利用SQLite的全部功能的同时进行流畅的数据库访问。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="test">
-<meta property="og:url" content="http://example.com/2022/05/07/test/index.html">
-<meta property="og:site_name" content="CaoHuisheng&#39;Blog">
-<meta property="og:description" content="Room-数据库持久化存储 简介： Room提供了一个访问SQLite的抽象层，以便在利用SQLite的全部功能的同时进行流畅的数据库访问。  处理大量结构化数据的应用, 能从在本地持久化数据中极大受益. 最常见的用例是缓存有关联的数据碎片. 以这种方式, 在设备不能访问网络的时候, 用户依然能够浏览离线内容. 任何用户发起的改变, 都应该在设备重新在线之后同步到服务器. 因为Room为你充分消除">
+<meta property="og:title" content="Room的基本使用">
+<meta property="og:url" content="http://example.com/2022/05/10/Room%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="CaoHuisheng&#39; Blog">
+<meta property="og:description" content="Room-数据库持久化存储 简介： Room提供了一个访问SQLite的抽象层，以便在利用SQLite的全部功能的同时进行流畅的数据库访问。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-05-07T05:04:53.000Z">
-<meta property="article:modified_time" content="2022-05-07T05:08:48.440Z">
-<meta property="article:author" content="CaoHUisheng">
+<meta property="article:published_time" content="2022-05-09T16:28:16.000Z">
+<meta property="article:modified_time" content="2022-05-09T16:29:43.468Z">
+<meta property="article:author" content="CaoHuisheng">
+<meta property="article:tag" content="Room">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2022/05/07/test/">
+<link rel="canonical" href="http://example.com/2022/05/10/Room%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/05/07/test/","path":"2022/05/07/test/","title":"test"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/05/10/Room%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/","path":"2022/05/10/Room的基本使用/","title":"Room的基本使用"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>test | CaoHuisheng'Blog</title>
+<title>Room的基本使用 | CaoHuisheng' Blog</title>
   
 
 
@@ -53,7 +54,7 @@
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
-<link rel="alternate" href="/rss2.xml" title="CaoHuisheng'Blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="CaoHuisheng' Blog" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
@@ -76,7 +77,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <p class="site-title">CaoHuisheng'Blog</p>
+      <p class="site-title">CaoHuisheng' Blog</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">Hello，world！</p>
@@ -155,18 +156,23 @@
 
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="CaoHUisheng"
+    <img class="site-author-image" itemprop="image" alt="CaoHuisheng"
       src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">CaoHUisheng</p>
-  <div class="site-description" itemprop="description">一个正在努力的程序员小白</div>
+  <p class="site-author-name" itemprop="name">CaoHuisheng</p>
+  <div class="site-description" itemprop="description">一只想成为设计师的程序猿。</div>
 </div>
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -228,25 +234,25 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/07/test/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/10/Room%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="CaoHUisheng">
+      <meta itemprop="name" content="CaoHuisheng">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="CaoHuisheng'Blog">
-      <meta itemprop="description" content="一个正在努力的程序员小白">
+      <meta itemprop="name" content="CaoHuisheng' Blog">
+      <meta itemprop="description" content="一只想成为设计师的程序猿。">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="test | CaoHuisheng'Blog">
+      <meta itemprop="name" content="Room的基本使用 | CaoHuisheng' Blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          test
+          Room的基本使用
         </h1>
 
         <div class="post-meta-container">
@@ -258,7 +264,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-05-07 13:04:53 / 修改时间：13:08:48" itemprop="dateCreated datePublished" datetime="2022-05-07T13:04:53+08:00">2022-05-07</time>
+      <time title="创建时间：2022-05-10 00:28:16 / 修改时间：00:29:43" itemprop="dateCreated datePublished" datetime="2022-05-10T00:28:16+08:00">2022-05-10</time>
     </span>
 
   
@@ -290,10 +296,10 @@
     <div class="post-body" itemprop="articleBody">
         <p>Room-数据库持久化存储</p>
 <p>简介： Room提供了一个访问SQLite的抽象层，以便在利用SQLite的全部功能的同时进行流畅的数据库访问。 </p>
-<p>处理大量结构化数据的应用, 能从在本地持久化数据中极大受益. 最常见的用例是缓存有关联的数据碎片. 以这种方式, 在设备不能访问网络的时候, 用户依然能够浏览离线内容. 任何用户发起的改变, 都应该在设备重新在线之后同步到服务器.</p>
-<p>因为Room为你充分消除了这些顾虑, 使用Room而非SQLite是高度推荐的.</p>
 <span id="more"></span>
 
+<p>处理大量结构化数据的应用, 能从在本地持久化数据中极大受益. 最常见的用例是缓存有关联的数据碎片. 以这种方式, 在设备不能访问网络的时候, 用户依然能够浏览离线内容. 任何用户发起的改变, 都应该在设备重新在线之后同步到服务器.</p>
+<p>因为Room为你充分消除了这些顾虑, 使用Room而非SQLite是高度推荐的.</p>
 <h3 id="Room的基本使用"><a href="#Room的基本使用" class="headerlink" title="Room的基本使用"></a>Room的基本使用</h3><h4 id="Room主要构件"><a href="#Room主要构件" class="headerlink" title="Room主要构件"></a>Room主要构件</h4><p>Room有3个主要构件</p>
 <ul>
 <li><p>Database: 包含了数据库持有者, 并对于连接应用上持久化的相关数据, 作为一个主要的访问点, 来服务. 注解了@Database的类应该满足以下条件:</p>
@@ -391,13 +397,16 @@
   </div>
 </div>
 
+          <div class="post-tags">
+              <a href="/tags/Room/" rel="tag"><i class="fa fa-tag"></i># Room</a>
+          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/05/07/Room%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" rel="prev" title="">
-                  <i class="fa fa-chevron-left"></i> 
+                <a href="/2022/05/06/hello-world/" rel="prev" title="Hello World">
+                  <i class="fa fa-chevron-left"></i> Hello World
                 </a>
             </div>
             <div class="post-nav-item">
@@ -425,7 +434,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">CaoHUisheng</span>
+  <span class="author" itemprop="copyrightHolder">CaoHuisheng</span>
 </div>
 <div class="wordcount">
   <span class="post-meta-item">
@@ -433,14 +442,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">22k</span>
+    <span title="站点总字数">11k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">20 分钟</span>
+    <span title="站点阅读时长">10 分钟</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
