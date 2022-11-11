@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/2022/05/06/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<span id="more"></span>
+
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>new</title>
+    <url>/2022/11/11/new/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>Room的基本使用</title>
     <url>/2022/05/10/Room%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<p>Room-数据库持久化存储</p>
@@ -23,24 +48,202 @@
 <li>DAO: 数据访问对象（Data Access Objects），我们通过它来访问数据。</li>
 </ul>
 <h4 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h4><p>1.添加依赖</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">def room_version = &quot;2.4.2&quot;</span><br><span class="line"></span><br><span class="line">implementation &quot;androidx.room:room-runtime:$room_version&quot;</span><br><span class="line">annotationProcessor &quot;androidx.room:room-compiler:$room_version&quot;</span><br><span class="line"></span><br><span class="line">// optional - Test helpers</span><br><span class="line">testImplementation &quot;androidx.room:room-testing:$room_vesion&quot;</span><br></pre></td></tr></table></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">def room_version = "2.4.2"
+
+implementation "androidx.room:room-runtime:$room_version"
+annotationProcessor "androidx.room:room-compiler:$room_version"
+
+// optional - Test helpers
+testImplementation "androidx.room:room-testing:$room_vesion"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>2.创建一个关于Note的表</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//Entity注解将Note类和数据库中的表Note_table对应起来，tableName可指定别名，默认为类名</span><br><span class="line">@Entity(tableName = &quot;Note_table&quot;)</span><br><span class="line">public class Note &#123;</span><br><span class="line">    @PrimaryKey(autoGenerate = true)//PrimaryKey时主键,autoGenerate自增长</span><br><span class="line">    private int id;</span><br><span class="line"></span><br><span class="line">    //ColumnInfo用于指定该字段存储在表中的名字，默认为属性名</span><br><span class="line">    @ColumnInfo(name = &quot;note_title&quot;)</span><br><span class="line">    private String title;</span><br><span class="line">    @ColumnInfo(name = &quot;note_context&quot;)</span><br><span class="line">    private String context;</span><br><span class="line">    @ColumnInfo(name = &quot;note_date&quot;)</span><br><span class="line">    private String date;</span><br><span class="line"></span><br><span class="line">    //Room默认使用这个构造方法</span><br><span class="line">    public Note(String title, String context) &#123;</span><br><span class="line">        this.title = title;</span><br><span class="line">        this.context = context;</span><br><span class="line">        Date d = new Date();</span><br><span class="line">        SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span><br><span class="line">        this.date = sdf.format(d);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //Ignore可以让Room忽略这个构造器</span><br><span class="line">    @Ignore</span><br><span class="line">    public Note(String title) &#123;</span><br><span class="line">        this.title = title;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getId() &#123;</span><br><span class="line">        return id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setId(int id) &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getTitle() &#123;</span><br><span class="line">        return title;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setTitle(String title) &#123;</span><br><span class="line">        this.title = title;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getContext() &#123;</span><br><span class="line">        return context;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setContext(String context) &#123;</span><br><span class="line">        this.context = context;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getDate() &#123;</span><br><span class="line">        return date;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setDate(String date) &#123;</span><br><span class="line">        this.date = date;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">//Entity注解将Note类和数据库中的表Note_table对应起来，tableName可指定别名，默认为类名
+@Entity(tableName = "Note_table")
+public class Note {
+    @PrimaryKey(autoGenerate = true)//PrimaryKey时主键,autoGenerate自增长
+    private int id;
+
+    //ColumnInfo用于指定该字段存储在表中的名字，默认为属性名
+    @ColumnInfo(name = "note_title")
+    private String title;
+    @ColumnInfo(name = "note_context")
+    private String context;
+    @ColumnInfo(name = "note_date")
+    private String date;
+
+    //Room默认使用这个构造方法
+    public Note(String title, String context) {
+        this.title = title;
+        this.context = context;
+        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.date = sdf.format(d);
+    }
+
+    //Ignore可以让Room忽略这个构造器
+    @Ignore
+    public Note(String title) {
+        this.title = title;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 
 
 <p>3.创建Dao用来操作Note表中的数据</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@Dao//Database Access Object </span><br><span class="line">public interface NoteDao &#123;</span><br><span class="line">    @Insert</span><br><span class="line">    public void InsertNote(Note... notes);</span><br><span class="line"></span><br><span class="line">    @Update</span><br><span class="line">    public void UpdateNote(Note... notes);</span><br><span class="line"></span><br><span class="line">    @Delete</span><br><span class="line">    public void DeleteNote(Note... notes);</span><br><span class="line"></span><br><span class="line">    @Query(&quot;DELETE FROM NOTE&quot;)</span><br><span class="line">    public void DeleteAllNotes();</span><br><span class="line"></span><br><span class="line">    //查询Note表中所有的Note</span><br><span class="line">    @Query(&quot;SELECT * FROM NOTE ORDER BY ID DESC&quot;)</span><br><span class="line">    public List&lt;Note&gt; getAllNotes();</span><br><span class="line"></span><br><span class="line">    //根据关键字查询Note表中所有的Note</span><br><span class="line">    @Query(&quot;SELECT * FROM NOTE WHERE note_title LIKE &#x27;%&#x27; || :content || &#x27;%&#x27; order by id desc&quot;)</span><br><span class="line">    public List&lt;Note&gt; searchNotes(String content);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">@Dao//Database Access Object 
+public interface NoteDao {
+    @Insert
+    public void InsertNote(Note... notes);
+
+    @Update
+    public void UpdateNote(Note... notes);
+
+    @Delete
+    public void DeleteNote(Note... notes);
+
+    @Query("DELETE FROM NOTE")
+    public void DeleteAllNotes();
+
+    //查询Note表中所有的Note
+    @Query("SELECT * FROM NOTE ORDER BY ID DESC")
+    public List&lt;Note&gt; getAllNotes();
+
+    //根据关键字查询Note表中所有的Note
+    @Query("SELECT * FROM NOTE WHERE note_title LIKE '%' || :content || '%' order by id desc")
+    public List&lt;Note&gt; searchNotes(String content);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 
 
 <p>4.创建数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 注解Database告诉系统这是Rooom数据库对象</span><br><span class="line"> * entities指定该数据库有哪些表，多张表就用逗号分隔</span><br><span class="line"> * version指定数据库版本号,升级时需要用到</span><br><span class="line"> * 数据库继承自Roomdatabase</span><br><span class="line"> */</span><br><span class="line">@Database(entities = &#123;Note.class&#125;,version = 1,exportSchema = false)</span><br><span class="line">public abstract class NoteDatabase extends RoomDatabase &#123;</span><br><span class="line">    private static NoteDatabase INSTANCE;</span><br><span class="line">    </span><br><span class="line">    //结合单例模式完成创建数据库实例</span><br><span class="line">    public static NoteDatabase getDatabase(Context context)&#123;</span><br><span class="line">        if (INSTANCE == null)&#123;</span><br><span class="line">            INSTANCE = 	Room.databaseBuilder(context.getApplicationContext(),NoteDatabase.class,&quot;note_database&quot;)</span><br><span class="line">                    .allowMainThreadQueries()</span><br><span class="line">                    .build();</span><br><span class="line">        &#125;</span><br><span class="line">        return INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //将创建的Dao对象已抽象的形式返回</span><br><span class="line">    public abstract NoteDao getNoteDao();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">/**
+ * 注解Database告诉系统这是Rooom数据库对象
+ * entities指定该数据库有哪些表，多张表就用逗号分隔
+ * version指定数据库版本号,升级时需要用到
+ * 数据库继承自Roomdatabase
+ */
+@Database(entities = {Note.class},version = 1,exportSchema = false)
+public abstract class NoteDatabase extends RoomDatabase {
+    private static NoteDatabase INSTANCE;
+    
+    //结合单例模式完成创建数据库实例
+    public static NoteDatabase getDatabase(Context context){
+        if (INSTANCE == null){
+            INSTANCE = 	Room.databaseBuilder(context.getApplicationContext(),NoteDatabase.class,"note_database")
+                    .allowMainThreadQueries()
+                    .build();
+        }
+        return INSTANCE;
+    }
+
+    //将创建的Dao对象已抽象的形式返回
+    public abstract NoteDao getNoteDao();
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>备注: 在实例化AppDatabase对象的时候, 你应该使用单例模式, 因为每一个RoomDatabase实例都是非常耗时的, 而且你也应该很少访问多个实例.</p>
 <p>5.使用</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class Test extends AppCompatActivity &#123;</span><br><span class="line">    private Button mButtonInsert;</span><br><span class="line">    private Button mButtonUpdate;</span><br><span class="line">    private Button mButtonDelete;</span><br><span class="line">    private Button mButtonClear;</span><br><span class="line">    private TextView mTextView;</span><br><span class="line">    private NoteDao mNoteDao;</span><br><span class="line">    private NoteDatabase mNoteDatabase;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        mTextView = (TextView) findViewById(R.id.textview);</span><br><span class="line">        mNoteDatabase = NoteDatabase.getDatabase(this);</span><br><span class="line">        mNoteDao = mNoteDatabase.getNoteDao();</span><br><span class="line">        updateUI();</span><br><span class="line"></span><br><span class="line">        mButtonInsert =(Button) findViewById(R.id.btn_insert);</span><br><span class="line">        mButtonInsert.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View view) &#123;</span><br><span class="line">                Note note1 = new Note(&quot;a&quot;,&quot;a&quot;);</span><br><span class="line">                Note note2 = new Note(&quot;b&quot;,&quot;b&quot;);</span><br><span class="line">                mNoteDao.InsertNote(note1,note2);</span><br><span class="line">                updateUI();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        mButtonUpdate = (Button) findViewById(R.id.btn_update);</span><br><span class="line">        mButtonUpdate.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View view) &#123;</span><br><span class="line">                Note note = new Note(&quot;c&quot;,&quot;c&quot;);</span><br><span class="line">                note.setId(1);</span><br><span class="line">                mNoteDao.UpdateNote(note);</span><br><span class="line">                updateUI();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        mButtonDelete = (Button) findViewById(R.id.btn_delete);</span><br><span class="line">        mButtonDelete.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View view) &#123;</span><br><span class="line">                Note note = new Note();</span><br><span class="line">                note.setId(2);</span><br><span class="line">                mNoteDao.DeleteNote(note);</span><br><span class="line">                updateUI();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        mButtonClear = (Button) findViewById(R.id.btn_clear);</span><br><span class="line">        mButtonClear.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View view) &#123;</span><br><span class="line">                mNoteDao.DeleteAllNotes();</span><br><span class="line">                updateUI();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void updateUI()&#123;</span><br><span class="line">        List&lt;Note&gt; notes = mNoteDao.getAllNotes();</span><br><span class="line">        String text = &quot;&quot;;</span><br><span class="line">        for(int i=0;i&lt;notes.size();i++)&#123;</span><br><span class="line">            Note note = notes.get(i);</span><br><span class="line">            text += &quot;Title:&quot; + note.getTitle() + &quot;Context&quot; + note.getContext() +&quot;\n&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        mTextView.setText(text);</span><br><span class="line">    &#125;//更新视图</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">public class Test extends AppCompatActivity {
+    private Button mButtonInsert;
+    private Button mButtonUpdate;
+    private Button mButtonDelete;
+    private Button mButtonClear;
+    private TextView mTextView;
+    private NoteDao mNoteDao;
+    private NoteDatabase mNoteDatabase;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mTextView = (TextView) findViewById(R.id.textview);
+        mNoteDatabase = NoteDatabase.getDatabase(this);
+        mNoteDao = mNoteDatabase.getNoteDao();
+        updateUI();
+
+        mButtonInsert =(Button) findViewById(R.id.btn_insert);
+        mButtonInsert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Note note1 = new Note("a","a");
+                Note note2 = new Note("b","b");
+                mNoteDao.InsertNote(note1,note2);
+                updateUI();
+            }
+        });
+
+        mButtonUpdate = (Button) findViewById(R.id.btn_update);
+        mButtonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Note note = new Note("c","c");
+                note.setId(1);
+                mNoteDao.UpdateNote(note);
+                updateUI();
+            }
+        });
+
+        mButtonDelete = (Button) findViewById(R.id.btn_delete);
+        mButtonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Note note = new Note();
+                note.setId(2);
+                mNoteDao.DeleteNote(note);
+                updateUI();
+            }
+        });
+
+        mButtonClear = (Button) findViewById(R.id.btn_clear);
+        mButtonClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mNoteDao.DeleteAllNotes();
+                updateUI();
+            }
+        });
+    }
+
+    public void updateUI(){
+        List&lt;Note&gt; notes = mNoteDao.getAllNotes();
+        String text = "";
+        for(int i=0;i&lt;notes.size();i++){
+            Note note = notes.get(i);
+            text += "Title:" + note.getTitle() + "Context" + note.getContext() +"\n";
+        }
+        mTextView.setText(text);
+    }//更新视图
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="Room与LiveData、ViewModel的结合使用"><a href="#Room与LiveData、ViewModel的结合使用" class="headerlink" title="Room与LiveData、ViewModel的结合使用"></a>Room与LiveData、ViewModel的结合使用</h3><h4 id="直接使用Room的劣势"><a href="#直接使用Room的劣势" class="headerlink" title="直接使用Room的劣势"></a>直接使用Room的劣势</h4><p>Android在UI线程不能执行耗时操作，但是为了测试，我们强制允许数据库在UI线程操作，当数据库发生变化时，我们重新从数据库中查询所有的数据再刷新视图，虽然暂时看不出有什么影响，但是当处理较大量的数据时就会造成延时，影响用户的体验，也很不方便，能不能使数据操作在另一个线程进行呢？</p>
 <h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><ul>
@@ -52,38 +255,173 @@
 </li>
 </ul>
 <h4 id="案例优化"><a href="#案例优化" class="headerlink" title="案例优化"></a>案例优化</h4><p>1.修改Note表的Dao文件，我们希望当数据发生改变时，能够收到一个实时的通知，这里我们使用LiveData将数据进行包装，如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//使用LiveData将结果List&lt;Note&gt;包装起来</span><br><span class="line">@Query(&quot;SELECT * FROM NOTE ORDER BY ID DESC&quot;)</span><br><span class="line">public LiveData&lt;List&lt;Note&gt;&gt; getAllNotesLive();</span><br><span class="line">    </span><br><span class="line">//使用LiveData将结果List&lt;Note&gt;包装起来</span><br><span class="line">@Query(&quot;SELECT * FROM NOTE WHERE note_title LIKE &#x27;%&#x27; || :content || &#x27;%&#x27; order by id desc&quot;)</span><br><span class="line">public LiveData&lt;List&lt;Note&gt;&gt; searchNotesLive(String content);</span><br></pre></td></tr></table></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">//使用LiveData将结果List&lt;Note&gt;包装起来
+@Query("SELECT * FROM NOTE ORDER BY ID DESC")
+public LiveData&lt;List&lt;Note&gt;&gt; getAllNotesLive();
+    
+//使用LiveData将结果List&lt;Note&gt;包装起来
+@Query("SELECT * FROM NOTE WHERE note_title LIKE '%' || :content || '%' order by id desc")
+public LiveData&lt;List&lt;Note&gt;&gt; searchNotesLive(String content);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>2.创建NoteViewModel类，在构造器中初始化数据库，并且添加增删查改的AsyncTask类</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class NoteViewModel extends AndroidViewModel &#123;</span><br><span class="line">    private NoteDao mNoteDao;</span><br><span class="line">    private LiveData&lt;List&lt;Note&gt;&gt; allNotesLive;</span><br><span class="line"></span><br><span class="line">    public NoteViewModel(@NonNull Application application) &#123;</span><br><span class="line">        super(application);</span><br><span class="line">        NoteDatabase noteDatabase = NoteDatabase.getDatabase(getApplication());</span><br><span class="line">        mNoteDao = noteDatabase.getNoteDao();</span><br><span class="line">        allNotesLive = mNoteDao.getAllNotesLive();//初始化数据库实例</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public LiveData&lt;List&lt;Note&gt;&gt; getAllNotesLive()&#123;</span><br><span class="line">        return allNotesLive;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void InsertNote(Note... notes)&#123;</span><br><span class="line">        new InsertAsyncTask(mNoteDao).execute(notes);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void UpdateNote(Note... notes)&#123;</span><br><span class="line">        new UpdateAsyncTask(mNoteDao).execute(notes);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void DeleteNote(Note... notes)&#123;</span><br><span class="line">        new DeleteAsyncTask(mNoteDao).execute(notes);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void ClearNote(Note... notes)&#123;</span><br><span class="line">        new ClearAsyncTask(mNoteDao).execute();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static class InsertAsyncTask extends AsyncTask&lt;Note,Void,Void&gt;&#123;</span><br><span class="line">        private NoteDao mNoteDao;</span><br><span class="line">        public InsertAsyncTask(NoteDao noteDao) &#123;</span><br><span class="line">            this.mNoteDao = noteDao;</span><br><span class="line">        &#125;</span><br><span class="line">        @Override</span><br><span class="line">        protected Void doInBackground(Note... notes) &#123;</span><br><span class="line">            mNoteDao.InsertNote(notes);</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static class UpdateAsyncTask extends AsyncTask&lt;Note,Void,Void&gt;&#123;</span><br><span class="line">        private NoteDao mNoteDao;</span><br><span class="line">        public UpdateAsyncTask(NoteDao noteDao) &#123;</span><br><span class="line">            this.mNoteDao = noteDao;</span><br><span class="line">        &#125;</span><br><span class="line">        @Override</span><br><span class="line">        protected Void doInBackground(Note... notes) &#123;</span><br><span class="line">            mNoteDao.UpdateNote(notes);</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static class DeleteAsyncTask extends AsyncTask&lt;Note,Void,Void&gt;&#123;</span><br><span class="line">        private NoteDao mNoteDao;</span><br><span class="line">        public DeleteAsyncTask(NoteDao noteDao) &#123;</span><br><span class="line">            this.mNoteDao = noteDao;</span><br><span class="line">        &#125;</span><br><span class="line">        @Override</span><br><span class="line">        protected Void doInBackground(Note... notes) &#123;</span><br><span class="line">            mNoteDao.DeleteNote(notes);</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static class ClearAsyncTask extends AsyncTask&lt;Void,Void,Void&gt;&#123;</span><br><span class="line">        private NoteDao mNoteDao;</span><br><span class="line">        public ClearAsyncTask(NoteDao noteDao) &#123;</span><br><span class="line">            this.mNoteDao = noteDao;</span><br><span class="line">        &#125;</span><br><span class="line">        @Override</span><br><span class="line">        protected Void doInBackground(Void... voids) &#123;</span><br><span class="line">            mNoteDao.DeleteAllNotes();</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">public class NoteViewModel extends AndroidViewModel {
+    private NoteDao mNoteDao;
+    private LiveData&lt;List&lt;Note&gt;&gt; allNotesLive;
+
+    public NoteViewModel(@NonNull Application application) {
+        super(application);
+        NoteDatabase noteDatabase = NoteDatabase.getDatabase(getApplication());
+        mNoteDao = noteDatabase.getNoteDao();
+        allNotesLive = mNoteDao.getAllNotesLive();//初始化数据库实例
+    }
+
+    public LiveData&lt;List&lt;Note&gt;&gt; getAllNotesLive(){
+        return allNotesLive;
+    }
+
+    public void InsertNote(Note... notes){
+        new InsertAsyncTask(mNoteDao).execute(notes);
+    }
+
+    public void UpdateNote(Note... notes){
+        new UpdateAsyncTask(mNoteDao).execute(notes);
+    }
+
+    public void DeleteNote(Note... notes){
+        new DeleteAsyncTask(mNoteDao).execute(notes);
+    }
+
+    public void ClearNote(Note... notes){
+        new ClearAsyncTask(mNoteDao).execute();
+    }
+
+
+    public static class InsertAsyncTask extends AsyncTask&lt;Note,Void,Void&gt;{
+        private NoteDao mNoteDao;
+        public InsertAsyncTask(NoteDao noteDao) {
+            this.mNoteDao = noteDao;
+        }
+        @Override
+        protected Void doInBackground(Note... notes) {
+            mNoteDao.InsertNote(notes);
+            return null;
+        }
+    }
+
+    public static class UpdateAsyncTask extends AsyncTask&lt;Note,Void,Void&gt;{
+        private NoteDao mNoteDao;
+        public UpdateAsyncTask(NoteDao noteDao) {
+            this.mNoteDao = noteDao;
+        }
+        @Override
+        protected Void doInBackground(Note... notes) {
+            mNoteDao.UpdateNote(notes);
+            return null;
+        }
+    }
+
+    public static class DeleteAsyncTask extends AsyncTask&lt;Note,Void,Void&gt;{
+        private NoteDao mNoteDao;
+        public DeleteAsyncTask(NoteDao noteDao) {
+            this.mNoteDao = noteDao;
+        }
+        @Override
+        protected Void doInBackground(Note... notes) {
+            mNoteDao.DeleteNote(notes);
+            return null;
+        }
+    }
+
+    public static class ClearAsyncTask extends AsyncTask&lt;Void,Void,Void&gt;{
+        private NoteDao mNoteDao;
+        public ClearAsyncTask(NoteDao noteDao) {
+            this.mNoteDao = noteDao;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mNoteDao.DeleteAllNotes();
+            return null;
+        }
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>3.在Activity中实例化NoteViewModel，并监听LiveData中数据的变化</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class Test extends AppCompatActivity &#123;</span><br><span class="line">    private Button mButtonInsert;</span><br><span class="line">    private Button mButtonUpdate;</span><br><span class="line">    private Button mButtonDelete;</span><br><span class="line">    private Button mButtonClear;</span><br><span class="line">    private TextView mTextView;</span><br><span class="line">    private NoteDao mNoteDao;</span><br><span class="line">    private NoteViewModel mViewModel;</span><br><span class="line">    private LiveData&lt;List&lt;Note&gt;&gt; allNotesLive;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        mTextView = (TextView) findViewById(R.id.textview);</span><br><span class="line">        NoteDatabase noteDatabase = NoteDatabase.getDatabase(getApplication());</span><br><span class="line">        mNoteDao = noteDatabase.getNoteDao();</span><br><span class="line">        mViewModel = new NoteViewModel(getApplication());</span><br><span class="line">        allNotesLive = mViewModel.getAllNotesLive();</span><br><span class="line"></span><br><span class="line">        allNotesLive.observe(this, new Observer&lt;List&lt;Note&gt;&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onChanged(List&lt;Note&gt; notes) &#123;</span><br><span class="line">                String text = &quot;&quot;;</span><br><span class="line">                for(int i=0;i&lt;notes.size();i++)&#123;</span><br><span class="line">                    Note note = notes.get(i);</span><br><span class="line">                    text += &quot;Title:&quot; + note.getTitle() + &quot;Context&quot; + note.getContext() +&quot;\n&quot;;</span><br><span class="line">                &#125;</span><br><span class="line">                mTextView.setText(text);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        mButtonInsert =(Button) findViewById(R.id.btn_insert);</span><br><span class="line">        mButtonInsert.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View view) &#123;</span><br><span class="line">                Note note1 = new Note(&quot;a&quot;,&quot;a&quot;);</span><br><span class="line">                Note note2 = new Note(&quot;b&quot;,&quot;b&quot;);</span><br><span class="line">                mViewModel.InsertNote(note1,note2);             </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        mButtonUpdate = (Button) findViewById(R.id.btn_update);</span><br><span class="line">        mButtonUpdate.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View view) &#123;</span><br><span class="line">                Note note = new Note(&quot;c&quot;,&quot;c&quot;);</span><br><span class="line">                note.setId(1);</span><br><span class="line">                mViewModel.UpdateNote(note);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        mButtonDelete = (Button) findViewById(R.id.btn_delete);</span><br><span class="line">        mButtonDelete.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View view) &#123;</span><br><span class="line">                Note note = new Note();</span><br><span class="line">                note.setId(2);</span><br><span class="line">                mViewModel.DeleteNote(note);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        mButtonClear = (Button) findViewById(R.id.btn_clear);</span><br><span class="line">        mButtonClear.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void onClick(View view) &#123;</span><br><span class="line">                mViewModel.ClearNote();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">public class Test extends AppCompatActivity {
+    private Button mButtonInsert;
+    private Button mButtonUpdate;
+    private Button mButtonDelete;
+    private Button mButtonClear;
+    private TextView mTextView;
+    private NoteDao mNoteDao;
+    private NoteViewModel mViewModel;
+    private LiveData&lt;List&lt;Note&gt;&gt; allNotesLive;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mTextView = (TextView) findViewById(R.id.textview);
+        NoteDatabase noteDatabase = NoteDatabase.getDatabase(getApplication());
+        mNoteDao = noteDatabase.getNoteDao();
+        mViewModel = new NoteViewModel(getApplication());
+        allNotesLive = mViewModel.getAllNotesLive();
+
+        allNotesLive.observe(this, new Observer&lt;List&lt;Note&gt;&gt;() {
+            @Override
+            public void onChanged(List&lt;Note&gt; notes) {
+                String text = "";
+                for(int i=0;i&lt;notes.size();i++){
+                    Note note = notes.get(i);
+                    text += "Title:" + note.getTitle() + "Context" + note.getContext() +"\n";
+                }
+                mTextView.setText(text);
+            }
+        });
+
+        mButtonInsert =(Button) findViewById(R.id.btn_insert);
+        mButtonInsert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Note note1 = new Note("a","a");
+                Note note2 = new Note("b","b");
+                mViewModel.InsertNote(note1,note2);             
+            }
+        });
+
+        mButtonUpdate = (Button) findViewById(R.id.btn_update);
+        mButtonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Note note = new Note("c","c");
+                note.setId(1);
+                mViewModel.UpdateNote(note);
+            }
+        });
+
+        mButtonDelete = (Button) findViewById(R.id.btn_delete);
+        mButtonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Note note = new Note();
+                note.setId(2);
+                mViewModel.DeleteNote(note);
+            }
+        });
+
+        mButtonClear = (Button) findViewById(R.id.btn_clear);
+        mButtonClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mViewModel.ClearNote();
+            }
+        });
+    }
+
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Room具有Entity、Dao、Database三大构件，数据库不允许在UI线程操作，可以通过AsyncTask将数据操作放在工作线程进行，通过ViewModel将数据存储在单独的地方。也可以使用LiveData将数据包装起来，当数据库中的数据有变动时，<code>onChanged</code>方法会被自动调用，在此方法中刷新数据即可。总的来说，Room的使用可比直接用SQLite简单多了，而且方便升级，还能够配合LiveData、ViewModel、AsyncTask等使用，将数据操作放在工作线程进行。</p>
 ]]></content>
       <tags>
         <tag>Room</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2022/05/06/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<span id="more"></span>
-
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
 </search>
