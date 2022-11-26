@@ -24,11 +24,13 @@
 <meta property="og:description" content="Room-数据库持久化存储 简介： Room提供了一个访问SQLite的抽象层，以便在利用SQLite的全部功能的同时进行流畅的数据库访问。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-05-09T16:28:16.000Z">
-<meta property="article:modified_time" content="2022-11-11T14:14:16.837Z">
+<meta property="article:modified_time" content="2022-11-12T14:13:10.772Z">
 <meta property="article:author" content="CaoHuisheng">
 <meta property="article:tag" content="Room">
 <meta name="twitter:card" content="summary_large_image">
   
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
   
   
   <title>Room的基本使用 - 小生生的博客</title>
@@ -40,8 +42,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -71,7 +71,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"caohuisheng.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"caohuisheng.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"copy"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -96,7 +96,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 70vh;">
+<div class="header-inner" style="height: 30vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -141,11 +141,23 @@
           
           
           
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="iconfont icon-category-fill"></i>
                 分类
               </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/android/">
+                    
+                    android
+                  </a>
+                
+              </div>
             </li>
           
         
@@ -224,7 +236,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          9.3k 字
+          9.9k 字
         
       </span>
     
@@ -235,12 +247,20 @@
         
         
         
-          78 分钟
+          83 分钟
         
       </span>
     
 
     
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
     
   </div>
 
@@ -298,202 +318,24 @@
 <li>DAO: 数据访问对象（Data Access Objects），我们通过它来访问数据。</li>
 </ul>
 <h4 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h4><p>1.添加依赖</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">def room_version = "2.4.2"
-
-implementation "androidx.room:room-runtime:$room_version"
-annotationProcessor "androidx.room:room-compiler:$room_version"
-
-// optional - Test helpers
-testImplementation "androidx.room:room-testing:$room_vesion"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">def</span> <span class="hljs-variable">room_version</span> <span class="hljs-operator">=</span> <span class="hljs-string">"2.4.2"</span><br><br>implementation <span class="hljs-string">"androidx.room:room-runtime:$room_version"</span><br>annotationProcessor <span class="hljs-string">"androidx.room:room-compiler:$room_version"</span><br><br><span class="hljs-comment">// optional - Test helpers</span><br>testImplementation <span class="hljs-string">"androidx.room:room-testing:$room_vesion"</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>2.创建一个关于Note的表</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">//Entity注解将Note类和数据库中的表Note_table对应起来，tableName可指定别名，默认为类名
-@Entity(tableName = "Note_table")
-public class Note {
-    @PrimaryKey(autoGenerate = true)//PrimaryKey时主键,autoGenerate自增长
-    private int id;
-
-    //ColumnInfo用于指定该字段存储在表中的名字，默认为属性名
-    @ColumnInfo(name = "note_title")
-    private String title;
-    @ColumnInfo(name = "note_context")
-    private String context;
-    @ColumnInfo(name = "note_date")
-    private String date;
-
-    //Room默认使用这个构造方法
-    public Note(String title, String context) {
-        this.title = title;
-        this.context = context;
-        Date d = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        this.date = sdf.format(d);
-    }
-
-    //Ignore可以让Room忽略这个构造器
-    @Ignore
-    public Note(String title) {
-        this.title = title;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContext() {
-        return context;
-    }
-
-    public void setContext(String context) {
-        this.context = context;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//Entity注解将Note类和数据库中的表Note_table对应起来，tableName可指定别名，默认为类名</span><br><span class="hljs-meta">@Entity(tableName = "Note_table")</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Note</span> {<br>    <span class="hljs-meta">@PrimaryKey(autoGenerate = true)</span><span class="hljs-comment">//PrimaryKey时主键,autoGenerate自增长</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> id;<br><br>    <span class="hljs-comment">//ColumnInfo用于指定该字段存储在表中的名字，默认为属性名</span><br>    <span class="hljs-meta">@ColumnInfo(name = "note_title")</span><br>    <span class="hljs-keyword">private</span> String title;<br>    <span class="hljs-meta">@ColumnInfo(name = "note_context")</span><br>    <span class="hljs-keyword">private</span> String context;<br>    <span class="hljs-meta">@ColumnInfo(name = "note_date")</span><br>    <span class="hljs-keyword">private</span> String date;<br><br>    <span class="hljs-comment">//Room默认使用这个构造方法</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Note</span><span class="hljs-params">(String title, String context)</span> {<br>        <span class="hljs-built_in">this</span>.title = title;<br>        <span class="hljs-built_in">this</span>.context = context;<br>        <span class="hljs-type">Date</span> <span class="hljs-variable">d</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>();<br>        <span class="hljs-type">SimpleDateFormat</span> <span class="hljs-variable">sdf</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>(<span class="hljs-string">"yyyy-MM-dd HH:mm:ss"</span>);<br>        <span class="hljs-built_in">this</span>.date = sdf.format(d);<br>    }<br><br>    <span class="hljs-comment">//Ignore可以让Room忽略这个构造器</span><br>    <span class="hljs-meta">@Ignore</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Note</span><span class="hljs-params">(String title)</span> {<br>        <span class="hljs-built_in">this</span>.title = title;<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getId</span><span class="hljs-params">()</span> {<br>        <span class="hljs-keyword">return</span> id;<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setId</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> {<br>        <span class="hljs-built_in">this</span>.id = id;<br>    }<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getTitle</span><span class="hljs-params">()</span> {<br>        <span class="hljs-keyword">return</span> title;<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setTitle</span><span class="hljs-params">(String title)</span> {<br>        <span class="hljs-built_in">this</span>.title = title;<br>    }<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getContext</span><span class="hljs-params">()</span> {<br>        <span class="hljs-keyword">return</span> context;<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setContext</span><span class="hljs-params">(String context)</span> {<br>        <span class="hljs-built_in">this</span>.context = context;<br>    }<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getDate</span><span class="hljs-params">()</span> {<br>        <span class="hljs-keyword">return</span> date;<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setDate</span><span class="hljs-params">(String date)</span> {<br>        <span class="hljs-built_in">this</span>.date = date;<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 
 
 <p>3.创建Dao用来操作Note表中的数据</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">@Dao//Database Access Object 
-public interface NoteDao {
-    @Insert
-    public void InsertNote(Note... notes);
-
-    @Update
-    public void UpdateNote(Note... notes);
-
-    @Delete
-    public void DeleteNote(Note... notes);
-
-    @Query("DELETE FROM NOTE")
-    public void DeleteAllNotes();
-
-    //查询Note表中所有的Note
-    @Query("SELECT * FROM NOTE ORDER BY ID DESC")
-    public List&lt;Note&gt; getAllNotes();
-
-    //根据关键字查询Note表中所有的Note
-    @Query("SELECT * FROM NOTE WHERE note_title LIKE '%' || :content || '%' order by id desc")
-    public List&lt;Note&gt; searchNotes(String content);
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Dao</span><span class="hljs-comment">//Database Access Object </span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">NoteDao</span> {<br>    <span class="hljs-meta">@Insert</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">InsertNote</span><span class="hljs-params">(Note... notes)</span>;<br><br>    <span class="hljs-meta">@Update</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">UpdateNote</span><span class="hljs-params">(Note... notes)</span>;<br><br>    <span class="hljs-meta">@Delete</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">DeleteNote</span><span class="hljs-params">(Note... notes)</span>;<br><br>    <span class="hljs-meta">@Query("DELETE FROM NOTE")</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">DeleteAllNotes</span><span class="hljs-params">()</span>;<br><br>    <span class="hljs-comment">//查询Note表中所有的Note</span><br>    <span class="hljs-meta">@Query("SELECT * FROM NOTE ORDER BY ID DESC")</span><br>    <span class="hljs-keyword">public</span> List&lt;Note&gt; <span class="hljs-title function_">getAllNotes</span><span class="hljs-params">()</span>;<br><br>    <span class="hljs-comment">//根据关键字查询Note表中所有的Note</span><br>    <span class="hljs-meta">@Query("SELECT * FROM NOTE WHERE note_title LIKE '%' || :content || '%' order by id desc")</span><br>    <span class="hljs-keyword">public</span> List&lt;Note&gt; <span class="hljs-title function_">searchNotes</span><span class="hljs-params">(String content)</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 
 
 <p>4.创建数据库</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">/**
- * 注解Database告诉系统这是Rooom数据库对象
- * entities指定该数据库有哪些表，多张表就用逗号分隔
- * version指定数据库版本号,升级时需要用到
- * 数据库继承自Roomdatabase
- */
-@Database(entities = {Note.class},version = 1,exportSchema = false)
-public abstract class NoteDatabase extends RoomDatabase {
-    private static NoteDatabase INSTANCE;
-    
-    //结合单例模式完成创建数据库实例
-    public static NoteDatabase getDatabase(Context context){
-        if (INSTANCE == null){
-            INSTANCE = 	Room.databaseBuilder(context.getApplicationContext(),NoteDatabase.class,"note_database")
-                    .allowMainThreadQueries()
-                    .build();
-        }
-        return INSTANCE;
-    }
-
-    //将创建的Dao对象已抽象的形式返回
-    public abstract NoteDao getNoteDao();
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 注解Database告诉系统这是Rooom数据库对象</span><br><span class="hljs-comment"> * entities指定该数据库有哪些表，多张表就用逗号分隔</span><br><span class="hljs-comment"> * version指定数据库版本号,升级时需要用到</span><br><span class="hljs-comment"> * 数据库继承自Roomdatabase</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Database(entities = {Note.class},version = 1,exportSchema = false)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NoteDatabase</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">RoomDatabase</span> {<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> NoteDatabase INSTANCE;<br>    <br>    <span class="hljs-comment">//结合单例模式完成创建数据库实例</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> NoteDatabase <span class="hljs-title function_">getDatabase</span><span class="hljs-params">(Context context)</span>{<br>        <span class="hljs-keyword">if</span> (INSTANCE == <span class="hljs-literal">null</span>){<br>            INSTANCE = 	Room.databaseBuilder(context.getApplicationContext(),NoteDatabase.class,<span class="hljs-string">"note_database"</span>)<br>                    .allowMainThreadQueries()<br>                    .build();<br>        }<br>        <span class="hljs-keyword">return</span> INSTANCE;<br>    }<br><br>    <span class="hljs-comment">//将创建的Dao对象已抽象的形式返回</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> NoteDao <span class="hljs-title function_">getNoteDao</span><span class="hljs-params">()</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>备注: 在实例化AppDatabase对象的时候, 你应该使用单例模式, 因为每一个RoomDatabase实例都是非常耗时的, 而且你也应该很少访问多个实例.</p>
 <p>5.使用</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">public class Test extends AppCompatActivity {
-    private Button mButtonInsert;
-    private Button mButtonUpdate;
-    private Button mButtonDelete;
-    private Button mButtonClear;
-    private TextView mTextView;
-    private NoteDao mNoteDao;
-    private NoteDatabase mNoteDatabase;
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mTextView = (TextView) findViewById(R.id.textview);
-        mNoteDatabase = NoteDatabase.getDatabase(this);
-        mNoteDao = mNoteDatabase.getNoteDao();
-        updateUI();
-
-        mButtonInsert =(Button) findViewById(R.id.btn_insert);
-        mButtonInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Note note1 = new Note("a","a");
-                Note note2 = new Note("b","b");
-                mNoteDao.InsertNote(note1,note2);
-                updateUI();
-            }
-        });
-
-        mButtonUpdate = (Button) findViewById(R.id.btn_update);
-        mButtonUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Note note = new Note("c","c");
-                note.setId(1);
-                mNoteDao.UpdateNote(note);
-                updateUI();
-            }
-        });
-
-        mButtonDelete = (Button) findViewById(R.id.btn_delete);
-        mButtonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Note note = new Note();
-                note.setId(2);
-                mNoteDao.DeleteNote(note);
-                updateUI();
-            }
-        });
-
-        mButtonClear = (Button) findViewById(R.id.btn_clear);
-        mButtonClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mNoteDao.DeleteAllNotes();
-                updateUI();
-            }
-        });
-    }
-
-    public void updateUI(){
-        List&lt;Note&gt; notes = mNoteDao.getAllNotes();
-        String text = "";
-        for(int i=0;i&lt;notes.size();i++){
-            Note note = notes.get(i);
-            text += "Title:" + note.getTitle() + "Context" + note.getContext() +"\n";
-        }
-        mTextView.setText(text);
-    }//更新视图
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Test</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AppCompatActivity</span> {<br>    <span class="hljs-keyword">private</span> Button mButtonInsert;<br>    <span class="hljs-keyword">private</span> Button mButtonUpdate;<br>    <span class="hljs-keyword">private</span> Button mButtonDelete;<br>    <span class="hljs-keyword">private</span> Button mButtonClear;<br>    <span class="hljs-keyword">private</span> TextView mTextView;<br>    <span class="hljs-keyword">private</span> NoteDao mNoteDao;<br>    <span class="hljs-keyword">private</span> NoteDatabase mNoteDatabase;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> Bundle savedInstanceState)</span> {<br>        <span class="hljs-built_in">super</span>.onCreate(savedInstanceState);<br>        mTextView = (TextView) findViewById(R.id.textview);<br>        mNoteDatabase = NoteDatabase.getDatabase(<span class="hljs-built_in">this</span>);<br>        mNoteDao = mNoteDatabase.getNoteDao();<br>        updateUI();<br><br>        mButtonInsert =(Button) findViewById(R.id.btn_insert);<br>        mButtonInsert.setOnClickListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() {<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View view)</span> {<br>                <span class="hljs-type">Note</span> <span class="hljs-variable">note1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Note</span>(<span class="hljs-string">"a"</span>,<span class="hljs-string">"a"</span>);<br>                <span class="hljs-type">Note</span> <span class="hljs-variable">note2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Note</span>(<span class="hljs-string">"b"</span>,<span class="hljs-string">"b"</span>);<br>                mNoteDao.InsertNote(note1,note2);<br>                updateUI();<br>            }<br>        });<br><br>        mButtonUpdate = (Button) findViewById(R.id.btn_update);<br>        mButtonUpdate.setOnClickListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() {<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View view)</span> {<br>                <span class="hljs-type">Note</span> <span class="hljs-variable">note</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Note</span>(<span class="hljs-string">"c"</span>,<span class="hljs-string">"c"</span>);<br>                note.setId(<span class="hljs-number">1</span>);<br>                mNoteDao.UpdateNote(note);<br>                updateUI();<br>            }<br>        });<br><br>        mButtonDelete = (Button) findViewById(R.id.btn_delete);<br>        mButtonDelete.setOnClickListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() {<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View view)</span> {<br>                <span class="hljs-type">Note</span> <span class="hljs-variable">note</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Note</span>();<br>                note.setId(<span class="hljs-number">2</span>);<br>                mNoteDao.DeleteNote(note);<br>                updateUI();<br>            }<br>        });<br><br>        mButtonClear = (Button) findViewById(R.id.btn_clear);<br>        mButtonClear.setOnClickListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() {<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View view)</span> {<br>                mNoteDao.DeleteAllNotes();<br>                updateUI();<br>            }<br>        });<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateUI</span><span class="hljs-params">()</span>{<br>        List&lt;Note&gt; notes = mNoteDao.getAllNotes();<br>        <span class="hljs-type">String</span> <span class="hljs-variable">text</span> <span class="hljs-operator">=</span> <span class="hljs-string">""</span>;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;i&lt;notes.size();i++){<br>            <span class="hljs-type">Note</span> <span class="hljs-variable">note</span> <span class="hljs-operator">=</span> notes.get(i);<br>            text += <span class="hljs-string">"Title:"</span> + note.getTitle() + <span class="hljs-string">"Context"</span> + note.getContext() +<span class="hljs-string">"\n"</span>;<br>        }<br>        mTextView.setText(text);<br>    }<span class="hljs-comment">//更新视图</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="Room与LiveData、ViewModel的结合使用"><a href="#Room与LiveData、ViewModel的结合使用" class="headerlink" title="Room与LiveData、ViewModel的结合使用"></a>Room与LiveData、ViewModel的结合使用</h3><h4 id="直接使用Room的劣势"><a href="#直接使用Room的劣势" class="headerlink" title="直接使用Room的劣势"></a>直接使用Room的劣势</h4><p>Android在UI线程不能执行耗时操作，但是为了测试，我们强制允许数据库在UI线程操作，当数据库发生变化时，我们重新从数据库中查询所有的数据再刷新视图，虽然暂时看不出有什么影响，但是当处理较大量的数据时就会造成延时，影响用户的体验，也很不方便，能不能使数据操作在另一个线程进行呢？</p>
 <h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><ul>
@@ -505,168 +347,13 @@ public abstract class NoteDatabase extends RoomDatabase {
 </li>
 </ul>
 <h4 id="案例优化"><a href="#案例优化" class="headerlink" title="案例优化"></a>案例优化</h4><p>1.修改Note表的Dao文件，我们希望当数据发生改变时，能够收到一个实时的通知，这里我们使用LiveData将数据进行包装，如下：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">//使用LiveData将结果List&lt;Note&gt;包装起来
-@Query("SELECT * FROM NOTE ORDER BY ID DESC")
-public LiveData&lt;List&lt;Note&gt;&gt; getAllNotesLive();
-    
-//使用LiveData将结果List&lt;Note&gt;包装起来
-@Query("SELECT * FROM NOTE WHERE note_title LIKE '%' || :content || '%' order by id desc")
-public LiveData&lt;List&lt;Note&gt;&gt; searchNotesLive(String content);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//使用LiveData将结果List&lt;Note&gt;包装起来</span><br><span class="hljs-meta">@Query("SELECT * FROM NOTE ORDER BY ID DESC")</span><br><span class="hljs-keyword">public</span> LiveData&lt;List&lt;Note&gt;&gt; <span class="hljs-title function_">getAllNotesLive</span><span class="hljs-params">()</span>;<br>    <br><span class="hljs-comment">//使用LiveData将结果List&lt;Note&gt;包装起来</span><br><span class="hljs-meta">@Query("SELECT * FROM NOTE WHERE note_title LIKE '%' || :content || '%' order by id desc")</span><br><span class="hljs-keyword">public</span> LiveData&lt;List&lt;Note&gt;&gt; <span class="hljs-title function_">searchNotesLive</span><span class="hljs-params">(String content)</span>;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>2.创建NoteViewModel类，在构造器中初始化数据库，并且添加增删查改的AsyncTask类</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">public class NoteViewModel extends AndroidViewModel {
-    private NoteDao mNoteDao;
-    private LiveData&lt;List&lt;Note&gt;&gt; allNotesLive;
-
-    public NoteViewModel(@NonNull Application application) {
-        super(application);
-        NoteDatabase noteDatabase = NoteDatabase.getDatabase(getApplication());
-        mNoteDao = noteDatabase.getNoteDao();
-        allNotesLive = mNoteDao.getAllNotesLive();//初始化数据库实例
-    }
-
-    public LiveData&lt;List&lt;Note&gt;&gt; getAllNotesLive(){
-        return allNotesLive;
-    }
-
-    public void InsertNote(Note... notes){
-        new InsertAsyncTask(mNoteDao).execute(notes);
-    }
-
-    public void UpdateNote(Note... notes){
-        new UpdateAsyncTask(mNoteDao).execute(notes);
-    }
-
-    public void DeleteNote(Note... notes){
-        new DeleteAsyncTask(mNoteDao).execute(notes);
-    }
-
-    public void ClearNote(Note... notes){
-        new ClearAsyncTask(mNoteDao).execute();
-    }
-
-
-    public static class InsertAsyncTask extends AsyncTask&lt;Note,Void,Void&gt;{
-        private NoteDao mNoteDao;
-        public InsertAsyncTask(NoteDao noteDao) {
-            this.mNoteDao = noteDao;
-        }
-        @Override
-        protected Void doInBackground(Note... notes) {
-            mNoteDao.InsertNote(notes);
-            return null;
-        }
-    }
-
-    public static class UpdateAsyncTask extends AsyncTask&lt;Note,Void,Void&gt;{
-        private NoteDao mNoteDao;
-        public UpdateAsyncTask(NoteDao noteDao) {
-            this.mNoteDao = noteDao;
-        }
-        @Override
-        protected Void doInBackground(Note... notes) {
-            mNoteDao.UpdateNote(notes);
-            return null;
-        }
-    }
-
-    public static class DeleteAsyncTask extends AsyncTask&lt;Note,Void,Void&gt;{
-        private NoteDao mNoteDao;
-        public DeleteAsyncTask(NoteDao noteDao) {
-            this.mNoteDao = noteDao;
-        }
-        @Override
-        protected Void doInBackground(Note... notes) {
-            mNoteDao.DeleteNote(notes);
-            return null;
-        }
-    }
-
-    public static class ClearAsyncTask extends AsyncTask&lt;Void,Void,Void&gt;{
-        private NoteDao mNoteDao;
-        public ClearAsyncTask(NoteDao noteDao) {
-            this.mNoteDao = noteDao;
-        }
-        @Override
-        protected Void doInBackground(Void... voids) {
-            mNoteDao.DeleteAllNotes();
-            return null;
-        }
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NoteViewModel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AndroidViewModel</span> {<br>    <span class="hljs-keyword">private</span> NoteDao mNoteDao;<br>    <span class="hljs-keyword">private</span> LiveData&lt;List&lt;Note&gt;&gt; allNotesLive;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">NoteViewModel</span><span class="hljs-params">(<span class="hljs-meta">@NonNull</span> Application application)</span> {<br>        <span class="hljs-built_in">super</span>(application);<br>        <span class="hljs-type">NoteDatabase</span> <span class="hljs-variable">noteDatabase</span> <span class="hljs-operator">=</span> NoteDatabase.getDatabase(getApplication());<br>        mNoteDao = noteDatabase.getNoteDao();<br>        allNotesLive = mNoteDao.getAllNotesLive();<span class="hljs-comment">//初始化数据库实例</span><br>    }<br><br>    <span class="hljs-keyword">public</span> LiveData&lt;List&lt;Note&gt;&gt; <span class="hljs-title function_">getAllNotesLive</span><span class="hljs-params">()</span>{<br>        <span class="hljs-keyword">return</span> allNotesLive;<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">InsertNote</span><span class="hljs-params">(Note... notes)</span>{<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">InsertAsyncTask</span>(mNoteDao).execute(notes);<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">UpdateNote</span><span class="hljs-params">(Note... notes)</span>{<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">UpdateAsyncTask</span>(mNoteDao).execute(notes);<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">DeleteNote</span><span class="hljs-params">(Note... notes)</span>{<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">DeleteAsyncTask</span>(mNoteDao).execute(notes);<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">ClearNote</span><span class="hljs-params">(Note... notes)</span>{<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">ClearAsyncTask</span>(mNoteDao).execute();<br>    }<br><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">InsertAsyncTask</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AsyncTask</span>&lt;Note,Void,Void&gt;{<br>        <span class="hljs-keyword">private</span> NoteDao mNoteDao;<br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">InsertAsyncTask</span><span class="hljs-params">(NoteDao noteDao)</span> {<br>            <span class="hljs-built_in">this</span>.mNoteDao = noteDao;<br>        }<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> Void <span class="hljs-title function_">doInBackground</span><span class="hljs-params">(Note... notes)</span> {<br>            mNoteDao.InsertNote(notes);<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        }<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UpdateAsyncTask</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AsyncTask</span>&lt;Note,Void,Void&gt;{<br>        <span class="hljs-keyword">private</span> NoteDao mNoteDao;<br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">UpdateAsyncTask</span><span class="hljs-params">(NoteDao noteDao)</span> {<br>            <span class="hljs-built_in">this</span>.mNoteDao = noteDao;<br>        }<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> Void <span class="hljs-title function_">doInBackground</span><span class="hljs-params">(Note... notes)</span> {<br>            mNoteDao.UpdateNote(notes);<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        }<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DeleteAsyncTask</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AsyncTask</span>&lt;Note,Void,Void&gt;{<br>        <span class="hljs-keyword">private</span> NoteDao mNoteDao;<br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">DeleteAsyncTask</span><span class="hljs-params">(NoteDao noteDao)</span> {<br>            <span class="hljs-built_in">this</span>.mNoteDao = noteDao;<br>        }<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> Void <span class="hljs-title function_">doInBackground</span><span class="hljs-params">(Note... notes)</span> {<br>            mNoteDao.DeleteNote(notes);<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        }<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ClearAsyncTask</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AsyncTask</span>&lt;Void,Void,Void&gt;{<br>        <span class="hljs-keyword">private</span> NoteDao mNoteDao;<br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">ClearAsyncTask</span><span class="hljs-params">(NoteDao noteDao)</span> {<br>            <span class="hljs-built_in">this</span>.mNoteDao = noteDao;<br>        }<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> Void <span class="hljs-title function_">doInBackground</span><span class="hljs-params">(Void... voids)</span> {<br>            mNoteDao.DeleteAllNotes();<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>        }<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>3.在Activity中实例化NoteViewModel，并监听LiveData中数据的变化</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">public class Test extends AppCompatActivity {
-    private Button mButtonInsert;
-    private Button mButtonUpdate;
-    private Button mButtonDelete;
-    private Button mButtonClear;
-    private TextView mTextView;
-    private NoteDao mNoteDao;
-    private NoteViewModel mViewModel;
-    private LiveData&lt;List&lt;Note&gt;&gt; allNotesLive;
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mTextView = (TextView) findViewById(R.id.textview);
-        NoteDatabase noteDatabase = NoteDatabase.getDatabase(getApplication());
-        mNoteDao = noteDatabase.getNoteDao();
-        mViewModel = new NoteViewModel(getApplication());
-        allNotesLive = mViewModel.getAllNotesLive();
-
-        allNotesLive.observe(this, new Observer&lt;List&lt;Note&gt;&gt;() {
-            @Override
-            public void onChanged(List&lt;Note&gt; notes) {
-                String text = "";
-                for(int i=0;i&lt;notes.size();i++){
-                    Note note = notes.get(i);
-                    text += "Title:" + note.getTitle() + "Context" + note.getContext() +"\n";
-                }
-                mTextView.setText(text);
-            }
-        });
-
-        mButtonInsert =(Button) findViewById(R.id.btn_insert);
-        mButtonInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Note note1 = new Note("a","a");
-                Note note2 = new Note("b","b");
-                mViewModel.InsertNote(note1,note2);             
-            }
-        });
-
-        mButtonUpdate = (Button) findViewById(R.id.btn_update);
-        mButtonUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Note note = new Note("c","c");
-                note.setId(1);
-                mViewModel.UpdateNote(note);
-            }
-        });
-
-        mButtonDelete = (Button) findViewById(R.id.btn_delete);
-        mButtonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Note note = new Note();
-                note.setId(2);
-                mViewModel.DeleteNote(note);
-            }
-        });
-
-        mButtonClear = (Button) findViewById(R.id.btn_clear);
-        mButtonClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mViewModel.ClearNote();
-            }
-        });
-    }
-
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Test</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AppCompatActivity</span> {<br>    <span class="hljs-keyword">private</span> Button mButtonInsert;<br>    <span class="hljs-keyword">private</span> Button mButtonUpdate;<br>    <span class="hljs-keyword">private</span> Button mButtonDelete;<br>    <span class="hljs-keyword">private</span> Button mButtonClear;<br>    <span class="hljs-keyword">private</span> TextView mTextView;<br>    <span class="hljs-keyword">private</span> NoteDao mNoteDao;<br>    <span class="hljs-keyword">private</span> NoteViewModel mViewModel;<br>    <span class="hljs-keyword">private</span> LiveData&lt;List&lt;Note&gt;&gt; allNotesLive;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> Bundle savedInstanceState)</span> {<br>        <span class="hljs-built_in">super</span>.onCreate(savedInstanceState);<br>        mTextView = (TextView) findViewById(R.id.textview);<br>        <span class="hljs-type">NoteDatabase</span> <span class="hljs-variable">noteDatabase</span> <span class="hljs-operator">=</span> NoteDatabase.getDatabase(getApplication());<br>        mNoteDao = noteDatabase.getNoteDao();<br>        mViewModel = <span class="hljs-keyword">new</span> <span class="hljs-title class_">NoteViewModel</span>(getApplication());<br>        allNotesLive = mViewModel.getAllNotesLive();<br><br>        allNotesLive.observe(<span class="hljs-built_in">this</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Observer</span>&lt;List&lt;Note&gt;&gt;() {<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onChanged</span><span class="hljs-params">(List&lt;Note&gt; notes)</span> {<br>                <span class="hljs-type">String</span> <span class="hljs-variable">text</span> <span class="hljs-operator">=</span> <span class="hljs-string">""</span>;<br>                <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;i&lt;notes.size();i++){<br>                    <span class="hljs-type">Note</span> <span class="hljs-variable">note</span> <span class="hljs-operator">=</span> notes.get(i);<br>                    text += <span class="hljs-string">"Title:"</span> + note.getTitle() + <span class="hljs-string">"Context"</span> + note.getContext() +<span class="hljs-string">"\n"</span>;<br>                }<br>                mTextView.setText(text);<br>            }<br>        });<br><br>        mButtonInsert =(Button) findViewById(R.id.btn_insert);<br>        mButtonInsert.setOnClickListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() {<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View view)</span> {<br>                <span class="hljs-type">Note</span> <span class="hljs-variable">note1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Note</span>(<span class="hljs-string">"a"</span>,<span class="hljs-string">"a"</span>);<br>                <span class="hljs-type">Note</span> <span class="hljs-variable">note2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Note</span>(<span class="hljs-string">"b"</span>,<span class="hljs-string">"b"</span>);<br>                mViewModel.InsertNote(note1,note2);             <br>            }<br>        });<br><br>        mButtonUpdate = (Button) findViewById(R.id.btn_update);<br>        mButtonUpdate.setOnClickListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() {<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View view)</span> {<br>                <span class="hljs-type">Note</span> <span class="hljs-variable">note</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Note</span>(<span class="hljs-string">"c"</span>,<span class="hljs-string">"c"</span>);<br>                note.setId(<span class="hljs-number">1</span>);<br>                mViewModel.UpdateNote(note);<br>            }<br>        });<br><br>        mButtonDelete = (Button) findViewById(R.id.btn_delete);<br>        mButtonDelete.setOnClickListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() {<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View view)</span> {<br>                <span class="hljs-type">Note</span> <span class="hljs-variable">note</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Note</span>();<br>                note.setId(<span class="hljs-number">2</span>);<br>                mViewModel.DeleteNote(note);<br>            }<br>        });<br><br>        mButtonClear = (Button) findViewById(R.id.btn_clear);<br>        mButtonClear.setOnClickListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() {<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View view)</span> {<br>                mViewModel.ClearNote();<br>            }<br>        });<br>    }<br><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Room具有Entity、Dao、Database三大构件，数据库不允许在UI线程操作，可以通过AsyncTask将数据操作放在工作线程进行，通过ViewModel将数据存储在单独的地方。也可以使用LiveData将数据包装起来，当数据库中的数据有变动时，<code>onChanged</code>方法会被自动调用，在此方法中刷新数据即可。总的来说，Room的使用可比直接用SQLite简单多了，而且方便升级，还能够配合LiveData、ViewModel、AsyncTask等使用，将数据操作放在工作线程进行。</p>
 
@@ -676,6 +363,27 @@ public LiveData&lt;List&lt;Note&gt;&gt; searchNotesLive(String content);<span ar
             <hr/>
             <div>
               <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/android/" class="category-chain-item">android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
   
   
     <div class="post-meta">
@@ -944,8 +652,6 @@ public LiveData&lt;List&lt;Note&gt;&gt; searchNotesLive(String content);<span ar
 </script>
 
 
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
-
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 
   <script>Fluid.plugins.codeWidget();</script>
@@ -1000,6 +706,8 @@ public LiveData&lt;List&lt;Note&gt;&gt; searchNotesLive(String content);<span ar
   <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
 
 
 
