@@ -21,10 +21,9 @@
 ]]></content>
   </entry>
   <entry>
-    <title></title>
+    <title>activity 的生命周期</title>
     <url>/2023/02/01/acticity%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
-    <content><![CDATA[<p>activity 的生命周期</p>
-<h2 id="返回栈"><a href="#返回栈" class="headerlink" title="返回栈"></a>返回栈</h2><ul>
+    <content><![CDATA[<h2 id="返回栈"><a href="#返回栈" class="headerlink" title="返回栈"></a>返回栈</h2><ul>
 <li>Android 是使用任务（Task）来管理活动的，一个任务就是一组存放在栈里的活动<br>的集合，这个栈也被称作返回栈（Back Stack）。</li>
 <li>系统总是会显示处于栈顶的活动给用户。</li>
 </ul>
@@ -75,6 +74,9 @@
 <p>ps:</p>
 <p>Intent 还可以结合 Bundle 一起用于传递数据的，首先可以把需要传递的数据都保存在 Bundle 对象中，然后再将 Bundle 对象存放在 Intent 里。到了目标活动之后先从 Intent 中取出 Bundle，再从 Bundle中一一取出数据。</p>
 ]]></content>
+      <tags>
+        <tag>android</tag>
+      </tags>
   </entry>
   <entry>
     <title>Java集合框架</title>
