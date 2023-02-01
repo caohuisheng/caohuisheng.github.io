@@ -21,6 +21,62 @@
 ]]></content>
   </entry>
   <entry>
+    <title></title>
+    <url>/2023/02/01/acticity%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
+    <content><![CDATA[<p>activity 的生命周期</p>
+<h2 id="返回栈"><a href="#返回栈" class="headerlink" title="返回栈"></a>返回栈</h2><ul>
+<li>Android 是使用任务（Task）来管理活动的，一个任务就是一组存放在栈里的活动<br>的集合，这个栈也被称作返回栈（Back Stack）。</li>
+<li>系统总是会显示处于栈顶的活动给用户。</li>
+</ul>
+<h2 id="活动的状态"><a href="#活动的状态" class="headerlink" title="活动的状态"></a>活动的状态</h2><ol>
+<li>运行状态</li>
+<li>暂停状态</li>
+<li>停止状态</li>
+<li>销毁状态</li>
+</ol>
+<h2 id="活动的生存期"><a href="#活动的生存期" class="headerlink" title="活动的生存期"></a>活动的生存期</h2><p>Activity 类中定义了七个回调方法，覆盖了活动生命周期的每一个环节：</p>
+<ol>
+<li>onCreate()</li>
+<li>onStart()</li>
+<li>onResume()</li>
+<li>onPause()</li>
+<li>onStop()</li>
+<li>onDestroy()</li>
+<li>onRestart()</li>
+</ol>
+<p>以上七个方法中除了 onRestart()方法，其他都是两两相对的，从而又可以将活动分为三种生存期:</p>
+<ol>
+<li>完整生存期<ul>
+<li>onCreate()</li>
+<li>onDestroy</li>
+</ul>
+</li>
+<li>可见生存期<ul>
+<li>onStart()</li>
+<li>onStop()</li>
+</ul>
+</li>
+<li>前台生存期<ul>
+<li>onResume()</li>
+<li>onPause()</li>
+</ul>
+</li>
+</ol>
+<h2 id="活动被回收了怎么办"><a href="#活动被回收了怎么办" class="headerlink" title="活动被回收了怎么办"></a>活动被回收了怎么办</h2><h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a><strong>问题</strong></h3><p>假设应用中有一个活动 A，用户在活动 A 的基础上启动了活动 B，活动 A 就进入了停止状态，这个时候由于系统内存不足，将活动 A 回收掉了，然后用户按下 Back 键返回活动A，会出现什么情况呢？其实还是会正常显示活动 A的，只不过这时并不会执行 onRestart() 方法，而是会执行活动 A 的 onCreate()方法，因为活动 A 在这种情况下会被重新创建一次。</p>
+<p>看上去好像一切正常，可是我们忽略了一个重要问题，活动 A 中可能存在临时数据，这时返回时A中的数据都无法恢复。应用中出现这种情况是会严重影响用户体验的，如何解决这个问题呢？</p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><p>我们可以使用 Activity 中的 onSaveInstanceState() 回调方法，这个方法会保证一定在活动被回收之前调用，因此我们可以通过这个方法来解决活动被回收时临时数据得不到保存的问题。</p>
+<p>onSaveInstanceState()方法会携带一个 Bundle 类型的参数，Bundle 提供了一系列的方法<br>用于保存数据，比如可以使用 putString()方法保存字符串，使用 putInt()方法保存整型数据，<br>以此类推。</p>
+<p><strong>1.在应用销毁前保存数据</strong></p>
+<figure class="highlight java"><table><tbody><tr><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onSaveInstanceState</span><span class="hljs-params">(Bundle outState)</span> {<br>    <span class="hljs-built_in">super</span>.onSaveInstanceState(outState);<br>    <span class="hljs-type">String</span> <span class="hljs-variable">tempData</span> <span class="hljs-operator">=</span> <span class="hljs-string">"Something you just typed"</span>;<br>    outState.putString(<span class="hljs-string">"data_key"</span>, tempData);<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p><strong>2.在应用重建时恢复数据</strong></p>
+<figure class="highlight java"><table><tbody><tr><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> {<br>    <span class="hljs-built_in">super</span>.onCreate(savedInstanceState);<br>    Log.d(TAG, <span class="hljs-string">"onCreate"</span>);<br>    requestWindowFeature(Window.FEATURE_NO_TITLE);<br>    setContentView(R.layout.activity_main);<br>    <span class="hljs-keyword">if</span> (savedInstanceState != <span class="hljs-literal">null</span>) {<br>        <span class="hljs-type">String</span> <span class="hljs-variable">tempData</span> <span class="hljs-operator">=</span> savedInstanceState.getString(<span class="hljs-string">"data_key"</span>);<br>        Log.d(TAG, tempData);<br>    }<br>    ……<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p>ps:</p>
+<p>Intent 还可以结合 Bundle 一起用于传递数据的，首先可以把需要传递的数据都保存在 Bundle 对象中，然后再将 Bundle 对象存放在 Intent 里。到了目标活动之后先从 Intent 中取出 Bundle，再从 Bundle中一一取出数据。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>Java集合框架</title>
     <url>/2022/12/04/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6/</url>
     <content><![CDATA[<p>在实现方法时,选择不同的数据结构会导致其实现风格以及性能存在着很大差异 。 需要快速地搜索成千上万个（ 甚至上百万 ） 有序的数据项吗？需要快速地在有序的序列中间插人元素或删除元素吗？需要建立键与值之间的关联吗?</p>
