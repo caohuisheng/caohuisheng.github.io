@@ -6,9 +6,13 @@
 
 
 <head>
-  <meta charset="UTF-8">
+  <meta name="referrer" content="no-referrer"/>
+  <meta charset="UTF-8" >
+
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
+  
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -16,18 +20,18 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本篇文章主要对hashcode为什么使用31作为乘数进行分析。">
+    <meta name="description" content="本文主要分析了String类中的hashcode为什么使用31作为乘数，通过统计hashcode的碰撞概率和散列分布情况分析出原因。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HashCode为什么使用31作为乘数">
 <meta property="og:url" content="http://caohuisheng.github.io/2024/09/01/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="本篇文章主要对hashcode为什么使用31作为乘数进行分析。">
+<meta property="og:description" content="本文主要分析了String类中的hashcode为什么使用31作为乘数，通过统计hashcode的碰撞概率和散列分布情况分析出原因。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://gitee.com/caohuisheng/imgbed/raw/master/img/202409011614425.png">
 <meta property="og:image" content="https://gitee.com/caohuisheng/imgbed/raw/master/img/202409011624789.png">
 <meta property="og:image" content="https://gitee.com/caohuisheng/imgbed/raw/master/img/202409011625143.png">
 <meta property="article:published_time" content="2024-09-01T07:24:47.000Z">
-<meta property="article:modified_time" content="2024-09-01T08:36:57.233Z">
+<meta property="article:modified_time" content="2024-09-01T10:05:39.064Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary_large_image">
@@ -52,7 +56,7 @@
 <!-- 主题依赖的图标库，不要自行修改 -->
 <!-- Do not modify the link that theme dependent icons -->
 
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
 
 
 
@@ -73,7 +77,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"caohuisheng.github.io","root":"/","version":"1.9.7","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":false};
+    var CONFIG = {"hostname":"caohuisheng.github.io","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":false};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -319,7 +323,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java">单词数量：<span class="hljs-number">103976</span><br>乘数 =    <span class="hljs-number">2</span>, 最小Hash =          <span class="hljs-number">97</span>, 最大Hash = <span class="hljs-number">1842581979</span>, 碰撞数量 = <span class="hljs-number">60382</span>, 碰撞概率 = <span class="hljs-number">58.0730</span>%<br>乘数 =    <span class="hljs-number">3</span>, 最小Hash = -<span class="hljs-number">2147308825</span>, 最大Hash = <span class="hljs-number">2146995420</span>, 碰撞数量 = <span class="hljs-number">24300</span>, 碰撞概率 = <span class="hljs-number">23.3708</span>%<br>乘数 =    <span class="hljs-number">5</span>, 最小Hash = -<span class="hljs-number">2147091606</span>, 最大Hash = <span class="hljs-number">2147227581</span>, 碰撞数量 =  <span class="hljs-number">7994</span>, 碰撞概率 = <span class="hljs-number">7.6883</span>%<br>乘数 =    <span class="hljs-number">7</span>, 最小Hash = -<span class="hljs-number">2147431389</span>, 最大Hash = <span class="hljs-number">2147226363</span>, 碰撞数量 =  <span class="hljs-number">3826</span>, 碰撞概率 = <span class="hljs-number">3.6797</span>%<br>乘数 =   <span class="hljs-number">17</span>, 最小Hash = -<span class="hljs-number">2147238638</span>, 最大Hash = <span class="hljs-number">2147101452</span>, 碰撞数量 =   <span class="hljs-number">576</span>, 碰撞概率 = <span class="hljs-number">0.5540</span>%<br>乘数 =   <span class="hljs-number">31</span>, 最小Hash = -<span class="hljs-number">2147461248</span>, 最大Hash = <span class="hljs-number">2147444544</span>, 碰撞数量 =     <span class="hljs-number">2</span>, 碰撞概率 = <span class="hljs-number">0.0019</span>%<br>乘数 =   <span class="hljs-number">32</span>, 最小Hash = -<span class="hljs-number">2007883634</span>, 最大Hash = <span class="hljs-number">2074238226</span>, 碰撞数量 = <span class="hljs-number">34947</span>, 碰撞概率 = <span class="hljs-number">33.6106</span>%<br>乘数 =   <span class="hljs-number">33</span>, 最小Hash = -<span class="hljs-number">2147469046</span>, 最大Hash = <span class="hljs-number">2147378587</span>, 碰撞数量 =     <span class="hljs-number">1</span>, 碰撞概率 = <span class="hljs-number">0.0010</span>%<br>乘数 =   <span class="hljs-number">39</span>, 最小Hash = -<span class="hljs-number">2147463635</span>, 最大Hash = <span class="hljs-number">2147443239</span>, 碰撞数量 =     <span class="hljs-number">0</span>, 碰撞概率 = <span class="hljs-number">0.0000</span>%<br>乘数 =   <span class="hljs-number">41</span>, 最小Hash = -<span class="hljs-number">2147423916</span>, 最大Hash = <span class="hljs-number">2147441721</span>, 碰撞数量 =     <span class="hljs-number">1</span>, 碰撞概率 = <span class="hljs-number">0.0010</span>%<br>乘数 =  <span class="hljs-number">199</span>, 最小Hash = -<span class="hljs-number">2147459902</span>, 最大Hash = <span class="hljs-number">2147480320</span>, 碰撞数量 =     <span class="hljs-number">0</span>, 碰撞概率 = <span class="hljs-number">0.0000</span>%<br></code></pre></td></tr></table></figure>
 
 <p>根据不同乘数的碰撞概率绘制图像如下：</p>
-<img src="https://gitee.com/caohuisheng/imgbed/raw/master/img/202409011614425.png" srcset="/img/loading.gif" lazyload alt="image-20240901161440223" style="zoom: 67%;" />
+<img src="https://gitee.com/caohuisheng/imgbed/raw/master/img/202409011614425.png" srcset="/img/loading.gif" lazyload alt="image-20240901161440223" style="zoom: 67%;"/>
 
 <p>根据结果可以看出，乘数为2、3、5、7、17、32时，碰撞概率都较大，乘数为31、33、39、41、199时，碰撞概率较小，但是乘数较大时，hashcode也会溢出，导致丢失信息。</p>
 <h2 id="3-hashcode散列分布"><a href="#3-hashcode散列分布" class="headerlink" title="3. hashcode散列分布"></a>3. hashcode散列分布</h2><p>除了计算不同乘数下的hashcode碰撞概率，还需要计算hashcode的分布，只有当hashcode分布均匀时，才能减少碰撞。</p>
@@ -330,8 +334,10 @@
 <h3 id="3-2-单元测试"><a href="#3-2-单元测试" class="headerlink" title="3.2 单元测试"></a>3.2 单元测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">test_hashArea</span><span class="hljs-params">()</span> &#123;<br>    System.out.println(HashCode.hashArea(words, <span class="hljs-number">2</span>).values());<br>    System.out.println(HashCode.hashArea(words, <span class="hljs-number">7</span>).values());<br>    System.out.println(HashCode.hashArea(words, <span class="hljs-number">31</span>).values());<br>    System.out.println(HashCode.hashArea(words, <span class="hljs-number">32</span>).values());<br>    System.out.println(HashCode.hashArea(words, <span class="hljs-number">199</span>).values());<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>上面计算了不同乘数在每个区间的hashcode数量，绘制图像如下：</p>
-<p><img src="https://gitee.com/caohuisheng/imgbed/raw/master/img/202409011624789.png" srcset="/img/loading.gif" lazyload alt="image-20240901162455507"></p>
-<p><img src="https://gitee.com/caohuisheng/imgbed/raw/master/img/202409011625143.png" srcset="/img/loading.gif" lazyload alt="image-20240901162518911"></p>
+<img src="https://gitee.com/caohuisheng/imgbed/raw/master/img/202409011624789.png" srcset="/img/loading.gif" lazyload style="zoom:80%;"/>
+
+<img src="https://gitee.com/caohuisheng/imgbed/raw/master/img/202409011625143.png" srcset="/img/loading.gif" lazyload style="zoom: 80%;" />
+
 <p>可以看到乘数为2、7、32时，hashcode分布都不是很均匀，乘数为31、199时分布较均匀，只有部分区间包含较多元素，但是使用199作为乘数会导致数据溢出，丢失信息，不能选择，因此选择31作为乘数是比较适合的。</p>
 <h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p>本文主要分析了String类中的hashcode为什么使用31作为乘数，通过使用不同的乘数计算hashcode，统计hashcode的碰撞概率和散列分布情况，得出结论：使用31作为乘数时，hashcode的碰撞概率较小，分布区间较均匀，并且hashcode的数据范围较小，不易产生溢出和数据丢失问题。</p>
 
@@ -405,7 +411,7 @@
               
                 <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
                   <span class="hint--top hint--rounded" aria-label="BY - Attribution">
-                    <i class="iconfont icon-by"></i>
+                    <i class="iconfont icon-cc-by"></i>
                   </span>
                 </a>
               
@@ -534,7 +540,6 @@
     <div class="footer-content">
        <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
     </div>
-  
   
   
   
